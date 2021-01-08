@@ -36,10 +36,10 @@ public class PageItemModel {
         this.data = data;
     }
 
-    public PageItemModel(boolean error, String message, List<Data> list) {
+    public PageItemModel(boolean error, String message, List<Data> data) {
         this.error = error;
         this.message = message;
-        this.data = list;
+        this.data = data;
     }
 
     public static class Data {
