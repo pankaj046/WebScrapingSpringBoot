@@ -14,6 +14,8 @@ import sharma.pankaj.webscraping.model.PageDetailModel;
 @RestController
 public class PageDetailController {
 
+    private static final String TAG = "PageDetailController";
+
     @ResponseBody
     @GetMapping("/pagedetail/{pageId}")
     public ResponseEntity<PageDetailModel> getPageDetails(@PathVariable(value = "pageId") String pageId){
@@ -41,8 +43,22 @@ public class PageDetailController {
             String language = getValue(info, info.indexOf("Language:")+9, "File size:");
             String fileSize = getValue(info, info.indexOf("File size:")+10, "File format:");
             String fileFormat = getValue(info, info.indexOf("File format:")+12, "");
-            String description = body.select("p:eq(2)").toString();
-            String pdfUrl = body.select("p:eq(2)").toString();
+            Elements data = body.select("p");
+            StringBuilder downloadLink = new StringBuilder();
+            StringBuilder des = new StringBuilder();
+            for (Element element : data){
+                String download = element.toString();
+                System.out.println(""+download);
+                if (download.contains("Download")){
+                    downloadLink.append(element.select("p > a").attr("abs:href")).append(",");
+                }else {
+                    if (download.length()>50 ){
+                        des.append(element.select("p").text().contains("Book Name")? "":element.select("p").text()).append(" ");
+                    }
+                }
+
+            }
+            String pdfUrl = downloadLink.deleteCharAt(downloadLink.length()-1).toString();
             response = new PageDetailModel(false, "Data fetch successfully", new PageDetailModel.Data(
                     title,
                     imageUrl,
@@ -54,7 +70,7 @@ public class PageDetailController {
                     language,
                     fileSize,
                     fileFormat,
-                    description,
+                    des.toString(),
                     pdfUrl
             ));
         }catch (Exception e){
