@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import sharma.pankaj.webscraping.model.PageDetailModel;
+import sharma.pankaj.webscraping.util.Constants;
 
 @RestController
 public class PageDetailController {
@@ -17,11 +18,11 @@ public class PageDetailController {
     private static final String TAG = "PageDetailController";
 
     @ResponseBody
-    @GetMapping("/pagedetail/{pageId}")
-    public ResponseEntity<PageDetailModel> getPageDetails(@PathVariable(value = "pageId") String pageId){
+    @GetMapping("api/detail/{bookId}")
+    public ResponseEntity<PageDetailModel> getPageDetails(@PathVariable(value = "bookId") String bookId){
         PageDetailModel response;
         try {
-            Document doc = Jsoup.connect("https://www.allitebooks.in/" + pageId).get();
+            Document doc = Jsoup.connect(Constants.url + bookId).get();
             Elements body = doc.select("div.td-post-content");
             String title = doc.select("h1.entry-title").text();
             String imageUrl = body.select("img").attr("abs:src");

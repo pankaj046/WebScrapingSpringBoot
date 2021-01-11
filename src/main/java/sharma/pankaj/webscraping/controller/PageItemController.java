@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import sharma.pankaj.webscraping.model.PageItemModel;
+import sharma.pankaj.webscraping.util.Constants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,38 +20,68 @@ import java.util.List;
 public class PageItemController {
 
     @ResponseBody
-    @GetMapping("/home")
-    public ResponseEntity<PageItemModel> getHomeData() throws IOException {
-        Document doc = Jsoup.connect("https://www.allitebooks.in/").get();
-        return getData(doc);
+    @GetMapping("/api/home")
+    public ResponseEntity<PageItemModel> getHomeData(){
+        return getData(Constants.url);
     }
 
 
     @ResponseBody
-    @GetMapping("/home/{id}")
-    public ResponseEntity<PageItemModel> getHomeDataWithPage(@PathVariable(value = "id") String id) throws IOException {
-        Document doc = Jsoup.connect("https://www.allitebooks.in/page/" + id).get();
-        return getData(doc);
+    @GetMapping("/api/home/{pageNumber}")
+    public ResponseEntity<PageItemModel> getHomeDataWithPageNumber(@PathVariable(value = "pageNumber") String pageNumber) {
+        return getData(Constants.url+"page/" + pageNumber);
     }
 
     @ResponseBody
-    @GetMapping("/category/{name}")
-    public ResponseEntity<PageItemModel> getCategoryDataWithPage(@PathVariable(value = "name") String name) throws IOException {
-        Document doc = Jsoup.connect("https://www.allitebooks.in/category/" + name).get();
-        return getData(doc);
+    @GetMapping("/api/category/{name}")
+    public ResponseEntity<PageItemModel> getCategoryData(@PathVariable(value = "name") String name) {
+        return getData(Constants.url+"category/" + name);
     }
 
     @ResponseBody
-    @GetMapping("/tag/{submenu}")
-    public ResponseEntity<PageItemModel> getSubMenuDataWithPage(@PathVariable(value = "submenu") String submenu) throws IOException {
-        Document doc = Jsoup.connect("https://www.allitebooks.in/tag/" + submenu).get();
-        return getData(doc);
+    @GetMapping("/api/category/{name}/page/{number}")
+    public ResponseEntity<PageItemModel>  getCategoryDataWithPageNumber(
+            @PathVariable(value = "name") String name,
+            @PathVariable(value = "number") String number) {
+        return getData(Constants.url+"category/" + name + "/page/" + number);
     }
 
-    private ResponseEntity<PageItemModel> getData(Document doc) {
+
+    @ResponseBody
+    @GetMapping("/api/tag/{tagId}")
+    public ResponseEntity<PageItemModel> getTagData(@PathVariable(value = "tagId") String tagId) {
+        return getData(Constants.url+"tag/" + tagId);
+    }
+
+
+    @ResponseBody
+    @GetMapping("/api/tag/{tagId}/page/{number}")
+    public ResponseEntity<PageItemModel> getTagDataWithPageNumber(
+            @PathVariable(value = "tagId") String tagId,
+            @PathVariable(value = "number") String number) {
+        return getData(Constants.url+"tag/" + tagId+ "/page/"+number);
+    }
+
+
+    @ResponseBody
+    @GetMapping("/api/search/{key}")
+    public ResponseEntity<PageItemModel> getSearch(@PathVariable(value = "key") String key){
+        return getData(Constants.url+"?s=" + key);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/search/{key}/page/{number}")
+    public ResponseEntity<PageItemModel> getSearchWithPageNumber(
+            @PathVariable(value = "key") String key,
+            @PathVariable(value = "number") String number){
+        return getData(Constants.url+"page/3/"+"?s=" + key);
+    }
+
+    private ResponseEntity<PageItemModel> getData(String value) {
         PageItemModel response;
         List<PageItemModel.Data> data = new ArrayList<>();
         try {
+            Document doc = Jsoup.connect(value).get();
             Elements body = doc.select("div.td-ss-main-content");
             for (Element element : body.select("div.td_module_19.td_module_wrap.td-animation-stack.td-meta-info-hide")) {
                 String title = element.select("h3").text();

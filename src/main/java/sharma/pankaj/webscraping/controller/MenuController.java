@@ -9,9 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sharma.pankaj.webscraping.model.MenuModel;
-import sharma.pankaj.webscraping.model.PageItemModel;
+import sharma.pankaj.webscraping.util.Constants;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +18,12 @@ import java.util.List;
 @RestController
 public class MenuController {
 
-
-
-
-    @GetMapping("/")
+    @GetMapping("/api/menu")
     public ResponseEntity<MenuModel> getMenu(){
-        MenuModel response = new MenuModel();
+        MenuModel response;
         try {
             List<MenuModel.Data> data = new ArrayList<>();
-            Document doc = Jsoup.connect("https://www.allitebooks.in/").get();
+            Document doc = Jsoup.connect(Constants.url).get();
             Elements body = doc.select("ul.sf-menu > li");
             for (int i=0; i<6; i++){
                 Element element = body.get(i);
