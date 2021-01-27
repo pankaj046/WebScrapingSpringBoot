@@ -20,61 +20,49 @@ import java.util.List;
 public class PageItemController {
 
     @ResponseBody
-    @GetMapping("/api/home")
-    public ResponseEntity<PageItemModel> getHomeData(){
-        return getData(Constants.url);
-    }
-
-
-    @ResponseBody
     @GetMapping("/api/home/{pageNumber}")
     public ResponseEntity<PageItemModel> getHomeDataWithPageNumber(@PathVariable(value = "pageNumber") String pageNumber) {
-        return getData(Constants.url+"page/" + pageNumber);
-    }
-
-    @ResponseBody
-    @GetMapping("/api/category/{name}")
-    public ResponseEntity<PageItemModel> getCategoryData(@PathVariable(value = "name") String name) {
-        return getData(Constants.url+"category/" + name);
+        if (pageNumber.equals("0") || pageNumber.equals("1")) {
+            return getData(Constants.url);
+        } else {
+            return getData(Constants.url + "page/" + pageNumber);
+        }
     }
 
     @ResponseBody
     @GetMapping("/api/category/{name}/page/{number}")
-    public ResponseEntity<PageItemModel>  getCategoryDataWithPageNumber(
+    public ResponseEntity<PageItemModel> getCategoryDataWithPageNumber(
             @PathVariable(value = "name") String name,
             @PathVariable(value = "number") String number) {
-        return getData(Constants.url+"category/" + name + "/page/" + number);
+        if (number.equals("0") || number.equals("1")) {
+            return getData(Constants.url + "category/" + name);
+        } else {
+            return getData(Constants.url + "category/" + name + "/page/" + number);
+        }
     }
-
-
-    @ResponseBody
-    @GetMapping("/api/tag/{tagId}")
-    public ResponseEntity<PageItemModel> getTagData(@PathVariable(value = "tagId") String tagId) {
-        return getData(Constants.url+"tag/" + tagId);
-    }
-
 
     @ResponseBody
     @GetMapping("/api/tag/{tagId}/page/{number}")
     public ResponseEntity<PageItemModel> getTagDataWithPageNumber(
             @PathVariable(value = "tagId") String tagId,
             @PathVariable(value = "number") String number) {
-        return getData(Constants.url+"tag/" + tagId+ "/page/"+number);
-    }
-
-
-    @ResponseBody
-    @GetMapping("/api/search/{key}")
-    public ResponseEntity<PageItemModel> getSearch(@PathVariable(value = "key") String key){
-        return getData(Constants.url+"?s=" + key);
+        if (number.equals("0") || number.equals("1")) {
+            return getData(Constants.url + "tag/" + tagId);
+        } else {
+            return getData(Constants.url + "tag/" + tagId + "/page/" + number);
+        }
     }
 
     @ResponseBody
     @GetMapping("/api/search/{key}/page/{number}")
     public ResponseEntity<PageItemModel> getSearchWithPageNumber(
             @PathVariable(value = "key") String key,
-            @PathVariable(value = "number") String number){
-        return getData(Constants.url+"page/3/"+"?s=" + key);
+            @PathVariable(value = "number") String number) {
+        if (number.equals("0") || number.equals("1")) {
+            return getData(Constants.url + "?s=" + key);
+        } else {
+            return getData(Constants.url + "page/3/" + "?s=" + key);
+        }
     }
 
     private ResponseEntity<PageItemModel> getData(String value) {
